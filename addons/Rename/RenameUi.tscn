@@ -1,54 +1,55 @@
-[gd_scene load_steps=3 format=3 uid="uid://w3pm2e8diq40"]
+[gd_scene format=3 uid="uid://w3pm2e8diq40"]
 
 [ext_resource type="Script" uid="uid://dawb0gk8e5xwr" path="res://addons/Rename/Manager.gd" id="1_bqbnu"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_mbi6d"]
 bg_color = Color(0.214616, 0.648424, 0.844072, 1)
 
-[node name="VBoxContainer" type="VBoxContainer"]
+[node name="VBoxContainer" type="VBoxContainer" unique_id=1119052135]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="MarginContainer" type="MarginContainer" parent="."]
+[node name="MarginContainer" type="MarginContainer" parent="." unique_id=651335101]
 layout_mode = 2
 theme_override_constants/margin_left = 2
 theme_override_constants/margin_right = 2
 
-[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer" unique_id=1729074847]
 layout_mode = 2
 theme_override_constants/separation = 5
 
-[node name="Label4" type="Label" parent="MarginContainer/VBoxContainer"]
+[node name="Label4" type="Label" parent="MarginContainer/VBoxContainer" unique_id=2063249984]
 layout_mode = 2
-text = "FileSystem CaseCleaner Tool"
+text = "Batch Rename Tool"
 
-[node name="HSeparator" type="HSeparator" parent="MarginContainer/VBoxContainer"]
+[node name="HSeparator" type="HSeparator" parent="MarginContainer/VBoxContainer" unique_id=592947788]
 layout_mode = 2
 
-[node name="Label2" type="Label" parent="MarginContainer/VBoxContainer"]
+[node name="Label2" type="Label" parent="MarginContainer/VBoxContainer" unique_id=1938493051]
 layout_mode = 2
 text = "Type"
 
-[node name="OptionType" type="OptionButton" parent="MarginContainer/VBoxContainer"]
+[node name="OptionType" type="OptionButton" parent="MarginContainer/VBoxContainer" unique_id=723047761]
 unique_name_in_owner = true
 layout_mode = 2
+selected = 1
 item_count = 2
 popup/item_0/text = "Folders"
 popup/item_0/id = 0
 popup/item_1/text = "Files"
 popup/item_1/id = 1
 
-[node name="buttonDir" type="Button" parent="MarginContainer/VBoxContainer"]
+[node name="buttonDir" type="Button" parent="MarginContainer/VBoxContainer" unique_id=763340480]
 unique_name_in_owner = true
 visible = false
 layout_mode = 2
 text = "SELECT DIRETORY
 "
 
-[node name="FileDialog" type="FileDialog" parent="MarginContainer/VBoxContainer/buttonDir"]
+[node name="FileDialog" type="FileDialog" parent="MarginContainer/VBoxContainer/buttonDir" unique_id=1012424392]
 unique_name_in_owner = true
 title = "Open a Directory"
 initial_position = 1
@@ -58,36 +59,158 @@ file_mode = 2
 access = 2
 option_count = 1
 
-[node name="Label" type="Label" parent="MarginContainer/VBoxContainer"]
+[node name="Label" type="Label" parent="MarginContainer/VBoxContainer" unique_id=1726702993]
 layout_mode = 2
 text = "Directory"
 
-[node name="LineEdit" type="LineEdit" parent="MarginContainer/VBoxContainer"]
+[node name="LineEdit" type="LineEdit" parent="MarginContainer/VBoxContainer" unique_id=866013884]
 unique_name_in_owner = true
 layout_mode = 2
 placeholder_text = "Dir Path where the folders or files are located"
 
-[node name="Label3" type="Label" parent="MarginContainer/VBoxContainer"]
+[node name="LabelRename" type="Label" parent="MarginContainer/VBoxContainer" unique_id=27740998]
 layout_mode = 2
-text = "Naming Conventions"
+text = "Rename to"
 
-[node name="CaseOption" type="OptionButton" parent="MarginContainer/VBoxContainer"]
+[node name="LineEditRename" type="LineEdit" parent="MarginContainer/VBoxContainer" unique_id=936068159]
 unique_name_in_owner = true
 layout_mode = 2
-item_count = 2
-popup/item_0/text = "PascalCase"
-popup/item_0/id = 0
-popup/item_1/text = "CamelCase"
-popup/item_1/id = 1
+placeholder_text = "If there's anything here, all the folders/files will be renamed "
 
-[node name="MainButton" type="Button" parent="MarginContainer/VBoxContainer"]
+[node name="Index" type="Label" parent="MarginContainer/VBoxContainer" unique_id=375795978]
+layout_mode = 2
+text = "Index Style"
+
+[node name="IndexOption" type="OptionButton" parent="MarginContainer/VBoxContainer" unique_id=21911331]
+unique_name_in_owner = true
+layout_mode = 2
+selected = 0
+item_count = 6
+popup/item_0/text = "Ignore"
+popup/item_0/id = 0
+popup/item_1/text = "N"
+popup/item_1/id = 1
+popup/item_2/text = "-N"
+popup/item_2/id = 2
+popup/item_3/text = "_N"
+popup/item_3/id = 3
+popup/item_4/text = "(N)"
+popup/item_4/id = 4
+popup/item_5/text = "[N]"
+popup/item_5/id = 5
+
+[node name="Space1" type="Label" parent="MarginContainer/VBoxContainer" unique_id=310838000]
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer" unique_id=25865817]
+layout_mode = 2
+
+[node name="Prefix" type="Control" parent="MarginContainer/VBoxContainer/HBoxContainer" unique_id=766605776]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/HBoxContainer/Prefix" unique_id=1468535832]
+layout_mode = 0
+offset_top = -28.0
+offset_right = 46.0
+offset_bottom = -5.0
+text = "Prefix"
+
+[node name="PrefixEdit" type="LineEdit" parent="MarginContainer/VBoxContainer/HBoxContainer/Prefix" unique_id=2119102676]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_bottom = 31.0
+grow_horizontal = 2
+placeholder_text = "Prefix to add"
+
+[node name="Suffix" type="Control" parent="MarginContainer/VBoxContainer/HBoxContainer" unique_id=380475945]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/HBoxContainer/Suffix" unique_id=73882453]
+layout_mode = 0
+offset_top = -28.0
+offset_right = 46.0
+offset_bottom = -5.0
+text = "Suffix"
+
+[node name="SuffixEdit" type="LineEdit" parent="MarginContainer/VBoxContainer/HBoxContainer/Suffix" unique_id=624073543]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_bottom = 31.0
+grow_horizontal = 2
+placeholder_text = "Suffix to add"
+
+[node name="Replace1" type="Control" parent="MarginContainer/VBoxContainer/HBoxContainer" unique_id=1339561842]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/HBoxContainer/Replace1" unique_id=655234934]
+layout_mode = 0
+offset_top = -28.0
+offset_right = 46.0
+offset_bottom = -5.0
+text = "Replace..."
+
+[node name="ReplaceEdit1" type="LineEdit" parent="MarginContainer/VBoxContainer/HBoxContainer/Replace1" unique_id=945534801]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_bottom = 31.0
+grow_horizontal = 2
+placeholder_text = "Replace this part of the folder/file's name..."
+
+[node name="Replace2" type="Control" parent="MarginContainer/VBoxContainer/HBoxContainer" unique_id=403370611]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/HBoxContainer/Replace2" unique_id=376845711]
+layout_mode = 0
+offset_top = -28.0
+offset_right = 46.0
+offset_bottom = -5.0
+text = "...with"
+
+[node name="ReplaceEdit2" type="LineEdit" parent="MarginContainer/VBoxContainer/HBoxContainer/Replace2" unique_id=1081100749]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_bottom = 31.0
+grow_horizontal = 2
+placeholder_text = "...with the following text"
+
+[node name="Space2" type="Label" parent="MarginContainer/VBoxContainer" unique_id=969124276]
+layout_mode = 2
+
+[node name="Space3" type="Label" parent="MarginContainer/VBoxContainer" unique_id=102547655]
+layout_mode = 2
+text = "Case Style"
+
+[node name="CaseOption" type="OptionButton" parent="MarginContainer/VBoxContainer" unique_id=1473673008]
+unique_name_in_owner = true
+layout_mode = 2
+selected = 0
+item_count = 3
+popup/item_0/text = "Ignore"
+popup/item_0/id = 0
+popup/item_1/text = "PascalCase"
+popup/item_1/id = 1
+popup/item_2/text = "CamelCase"
+popup/item_2/id = 2
+
+[node name="Space4" type="Label" parent="MarginContainer/VBoxContainer" unique_id=1255105588]
+layout_mode = 2
+
+[node name="MainButton" type="Button" parent="MarginContainer/VBoxContainer" unique_id=706129879]
 custom_minimum_size = Vector2(0, 50)
 layout_mode = 2
 theme_override_styles/normal = SubResource("StyleBoxFlat_mbi6d")
 text = "Rename"
 script = ExtResource("1_bqbnu")
 
-[node name="feeback" type="Label" parent="MarginContainer/VBoxContainer"]
+[node name="feeback" type="Label" parent="MarginContainer/VBoxContainer" unique_id=502881754]
 unique_name_in_owner = true
 layout_mode = 2
 text = " "

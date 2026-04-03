@@ -7,12 +7,17 @@ extends Button  # Este script é um plugin que estende o botão padrão do Godot
 @onready var feeback: Label = %feeback  # Referência para Label que mostra feedback para o usuário
 @onready var button_dir: Button = %buttonDir
 
+@onready var rename_to: LineEdit = %LineEditRename
+@onready var index_style: OptionButton = %IndexOption
+@onready var prefix : LineEdit = $"../HBoxContainer/Prefix/PrefixEdit"
+@onready var suffix : LineEdit = $"../HBoxContainer/Suffix/SuffixEdit"
+@onready var replace_this : LineEdit = $"../HBoxContainer/Replace1/ReplaceEdit1"
+@onready var replace_with : LineEdit = $"../HBoxContainer/Replace2/ReplaceEdit2"
+
 # Função chamada quando o node está pronto
 func _ready() -> void:
 	pressed.connect(onbuttonpressed)  # Conecta o sinal de clique do botão para a função onbuttonpressed
 	feeback.text =" "  # Limpa o texto do feedback
-	
-	
 
 	## Conecta o botão ao método que vai abrir o dialog
 	#pressed.connect(_on_button_dir_pressed)
@@ -29,23 +34,27 @@ func onbuttonpressed() -> void:
 
 	var type_id = option_type.get_selected_id()  # Pega o ID selecionado no OptionButton para tipo (pasta ou arquivo)
 	var case_id = case_type.get_selected_id()  # Pega o ID selecionado no OptionButton para case (Pascal ou Camel)
-
+	
 	if type_id == 0:  # Se selecionou "pastas"
-		if case_id == 0:  # Se selecionou Pascal Case
+		rename_folders(path)
+		#rename_folders(path) # renomeia todas as pastas (ainda não existe)
+		if case_id == 1:  # Se selecionou Pascal Case
 			rename_folders_pascal_case(path)  # Chama função para renomear pastas em Pascal Case
-			feeback.text ="Converted to Pascal Case, check FileSystem"  # Feedback para o usuário
-		elif case_id == 1:  # Se selecionou Camel Case
+		elif case_id == 2:  # Se selecionou Camel Case
 			rename_folders_camel_case(path)  # Chama função para renomear pastas em Camel Case
-			feeback.text ="Converted to Camel Case, check FileSystem"  # Feedback
+		
+		feeback.text ="Folders converted successfully! Check FileSystem"  # Feedback
 		list_all_folders(path)  # Lista todas as pastas (para visualização)
 
 	elif type_id == 1:  # Se selecionou "arquivos"
-		if case_id == 0:  # Pascal Case
-			rename_files_pascal_case(path)  # Renomeia arquivos em Pascal Case
-			feeback.text ="Converted to Pascal Case, check FileSystem"
-		elif case_id == 1:  # Camel Case
-			rename_files_camel_case(path)  # Renomeia arquivos em Camel Case
-			feeback.text ="Converted to Camel Case, check FileSystem"
+		rename_files(path) # renomeia todos os arquivos
+		if case_id == 1:  # Se selecionou Pascal Case
+			rename_files_pascal_case(path)  # Chama função para renomear arquivos em Pascal Case
+		elif case_id == 2:  # Se selecionou Camel Case
+			rename_files_camel_case(path)  # Chama função para renomear arquivos em Camel Case
+		
+		feeback.text ="Files converted successfully! Check FileSystem"  # Feedback
+		list_all_folders(path)  # Lista todas as pastas (para visualização)
 
 		var all_files = list_all_files(path)  # Lista todos os arquivos (recursivamente)
 		for f in all_files:  # Itera sobre cada arquivo
@@ -366,7 +375,121 @@ func count_files_and_folders(path: String) -> Dictionary:
 	dir.list_dir_end()
 	return result  # Retorna dicionário com contagem de arquivos e pastas
 
+# começa aqui
+func rename_folders(path: String) -> void:
+	var dir = DirAccess.open(path)
+	if dir == null:
+		print("Não consegui abrir diretório: ", path)
+		return
 
+	dir.list_dir_begin()
+	var folder_names = []  # Lista para armazenar nomes das pastas
+	var file_name = dir.get_next()
+
+	while file_name != "":
+		if file_name == "." or file_name == "..":
+			file_name = dir.get_next()
+			continue
+
+		if dir.current_is_dir():
+			folder_names.append(file_name)  # Guarda nomes das pastas para renomear depois
+
+		file_name = dir.get_next()
+
+	dir.list_dir_end()
+	
+	var file_index: int = -1
+	for folder_name in folder_names:  # Para cada pasta encontrada
+		file_index += 1
+		var old_folder_path = path + "/" + folder_name  # Caminho antigo
+		var new_folder_name = generate_new_name(folder_name, file_index)
+		var new_folder_path = path + "/" + new_folder_name  # Novo caminho
+
+		if old_folder_path != new_folder_path:  # Se o nome mudou
+			var error = dir.rename(old_folder_path, new_folder_path)  # Tenta renomear
+			if error == OK:
+				print("Renomeado: ", old_folder_path, " -> ", new_folder_path)
+			else:
+				print("Erro ao renomear: ", old_folder_path, " Erro: ", error)
+
+func rename_files(path: String) -> void:
+	var dir := DirAccess.open(path)
+	if dir == null:
+		print("Não consegui abrir diretório: ", path)
+		return
+
+	dir.list_dir_begin()
+	var names: Array[String] = []
+
+	while true:
+		var name: String = dir.get_next()
+		if name == "":
+			break
+		if name == "." or name == "..":
+			continue
+		names.append(name)  # Guarda todos os nomes encontrados
+	dir.list_dir_end()
+	
+	var file_index: int = -1
+	for name in names:
+		file_index += 1
+		var full_path := path.path_join(name)
+
+		# Tenta abrir como diretório
+		var maybe_dir := DirAccess.open(full_path)
+		if maybe_dir != null:
+			rename_files(full_path)  # Se for pasta, chama recursivamente
+			continue
+
+		# Se for arquivo
+		if FileAccess.file_exists(full_path):
+			var base_name: String = name.get_basename()
+			var extension: String = name.get_extension()
+			var new_file_name = generate_new_name(base_name, file_index)
+			if extension != "":
+				new_file_name += "." + extension
+
+			var new_file_path: String = path.path_join(new_file_name)
+
+			if full_path != new_file_path:
+				var rename_dir := DirAccess.open(path)
+				var error := rename_dir.rename(full_path, new_file_path)
+
+				# Workaround para sistemas que não diferenciam maiúsculas/minúsculas no nome de arquivo
+				if error != OK and full_path.to_lower() == new_file_path.to_lower():
+					var temp_path := new_file_path + "_temp"
+					var temp_error := rename_dir.rename(full_path, temp_path)
+					if temp_error == OK:
+						var final_error := rename_dir.rename(temp_path, new_file_path)
+						if final_error == OK:
+							print("Renomeado (forçado): ", full_path, " -> ", new_file_path)
+						else:
+							print("Erro ao renomear TEMP -> final: ", final_error)
+					else:
+						print("Erro ao renomear para TEMP: ", temp_error)
+				elif error == OK:
+					print("Arquivo renomeado: ", full_path, " -> ", new_file_path)
+				else:
+					print("Erro ao renomear arquivo: ", full_path, " Erro: ", error)
+
+func generate_new_name(base_name: String, index: int) -> String:
+	var new_name: String = base_name
+	if rename_to.text != "":
+		new_name = rename_to.text
+	var index_str: String = ""
+	match (index_style.selected):
+		1:
+			index_str = " " + str(index)
+		2:
+			index_str = "-" + str(index)
+		3:
+			index_str = "_" + str(index)
+		4:
+			index_str = " (" + str(index) + ")"
+		5:
+			index_str = " [" + str(index) + "]"
+	var replaced_name: String = new_name.replace(replace_this.text, replace_with.text)
+	return prefix.text + replaced_name + suffix.text + index_str
 #func _on_button_dir_pressed() -> void:
 	#%FileDialog.popup()
 	#
